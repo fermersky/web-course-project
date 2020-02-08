@@ -21,6 +21,28 @@ namespace TodoApp.Controllers
         }
 
         [HttpGet]
+        public IActionResult Login()
+        {
+            return View();
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> Login(LoginViewModel model)
+        {
+            if (ModelState.IsValid)
+            {
+                var result = await signInManager.PasswordSignInAsync(model.Email, model.Password, model.RememberMe, lockoutOnFailure: false);
+
+                if (result.Succeeded)
+                    return RedirectToAction("Index", "Home");
+
+                ModelState.AddModelError(key: string.Empty, "Pair username and password is wrong!");
+            }
+
+            return View();
+        }
+
+        [HttpGet]
         public IActionResult Register()
         {
             return View();
@@ -52,6 +74,13 @@ namespace TodoApp.Controllers
             }
 
             return View();
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> Logout()
+        {
+            await signInManager.SignOutAsync();
+            return RedirectToAction("Index", "Home");
         }
     }
 }

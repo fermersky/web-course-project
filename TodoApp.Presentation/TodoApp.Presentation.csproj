@@ -4,4 +4,8 @@
     <TargetFramework>netcoreapp3.1</TargetFramework>
   </PropertyGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\TodoApp.Entities\TodoApp.Entities.csproj" />
+  </ItemGroup>
+
 </Project>
