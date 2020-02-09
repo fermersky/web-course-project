@@ -10,6 +10,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using TodoApp.Business.Repositories.Implementations;
 using TodoApp.Entities;
 using TodoApp.Entities.Models;
 
@@ -35,6 +36,8 @@ namespace TodoApp
             });
 
             services.AddIdentity<ApplicationUser, IdentityRole>().AddEntityFrameworkStores<TodoDbContext>();
+            services.AddTransient<TodoRepository>();
+            services.AddSignalR();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -61,6 +64,8 @@ namespace TodoApp
                 endpoints.MapControllerRoute(
                     name: "default",
                     pattern: "{controller=Home}/{action=Index}/{id?}");
+
+                endpoints.MapHub<TodoHub>("/todohub");
             });
         }
     }

@@ -8,5 +8,7 @@ namespace TodoApp.Business.Repositories.Abstract
     public interface IRepository<TEntity> where TEntity : class
     {
         Task<TEntity> AddAsync(TEntity entity);
+
+        Task<List<TEntity>> GetListAsync();
     }
 }

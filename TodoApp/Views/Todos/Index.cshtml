@@ -1,0 +1,20 @@
+﻿@model List<Todo>
+@{
+    ViewData["Title"] = $"Hello, {User.Identity.Name}";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h1>Index</h1>
+
+@if (Model.Any())
+{
+    foreach (Todo todo in Model)
+    {
+        <h1>@todo.Title</h1>
+    }
+}
+else
+{
+    <h2>No todos yet...</h2>
+    <a asp-controller="todos" asp-action="create" class="btn btn-outline-primary">add todo</a>
+}

@@ -1,6 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using TodoApp.Entities;
@@ -25,6 +26,13 @@ namespace TodoApp.Business.Repositories.Abstract
             return entity;
         }
 
+        public async Task<List<TEntity>> GetListAsync()
+        {
+            return await storage.ToListAsync();
+        }
+
         public async Task Save() => await context.SaveChangesAsync();
+
+
     }
 }

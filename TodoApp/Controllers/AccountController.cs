@@ -34,7 +34,7 @@ namespace TodoApp.Controllers
                 var result = await signInManager.PasswordSignInAsync(model.Email, model.Password, model.RememberMe, lockoutOnFailure: false);
 
                 if (result.Succeeded)
-                    return RedirectToAction("Index", "Home");
+                    return RedirectToAction("Index", "Todos");
 
                 ModelState.AddModelError(key: string.Empty, "Pair username and password is wrong!");
             }
