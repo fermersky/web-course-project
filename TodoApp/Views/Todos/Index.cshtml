@@ -18,3 +18,20 @@ else
     <h2>No todos yet...</h2>
     <a asp-controller="todos" asp-action="create" class="btn btn-outline-primary">add todo</a>
 }
+
+@section Scripts{
+    <script src="~/lib/microsoft/signalr/dist/browser/signalr.min.js"></script>
+
+    <script>
+        const hubConnection = new signalR.HubConnectionBuilder()
+            .withUrl("/todohub")
+            .build();
+
+        hubConnection.on('TodoCreated', data => {
+            console.log(data)
+        })
+
+        hubConnection.start();
+
+    </script>
+}

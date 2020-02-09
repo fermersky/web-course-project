@@ -11,6 +11,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using TodoApp.Business.Repositories.Implementations;
+using TodoApp.Business.TodosSignalR;
 using TodoApp.Entities;
 using TodoApp.Entities.Models;
 

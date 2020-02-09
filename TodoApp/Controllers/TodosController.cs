@@ -9,6 +9,9 @@ using Microsoft.AspNetCore.Mvc;
 using TodoApp.Business.Repositories.Implementations;
 using TodoApp.Entities.Models;
 using TodoApp.Presentation.ViewModels;
+using Microsoft.AspNetCore.SignalR;
+using System.Text.Json;
+using TodoApp.Business.TodosSignalR;
 
 namespace TodoApp.Controllers
 {
@@ -17,11 +20,13 @@ namespace TodoApp.Controllers
     {
         private readonly TodoRepository todoRepository;
         private readonly UserManager<ApplicationUser> userManager;
+        private readonly IHubContext<TodoHub> hubContext;
 
-        public TodosController(TodoRepository todoRepository, UserManager<ApplicationUser> userManager)
+        public TodosController(TodoRepository todoRepository, UserManager<ApplicationUser> userManager, IHubContext<TodoHub> hubContext)
         {
             this.todoRepository = todoRepository;
             this.userManager = userManager;
+            this.hubContext = hubContext;
         }
 
         public async Task<IActionResult> Index()
@@ -52,12 +57,17 @@ namespace TodoApp.Controllers
                     Priority = model.Priority,
                 };
 
+                // add todo and bing it to signed in user
                 var signedInUserId = User.FindFirst(ClaimTypes.NameIdentifier).Value;
-                var user = await userManager.FindByIdAsync(signedInUserId);
-
-                todo.User = user;
-
+                todo.User = await userManager.FindByIdAsync(signedInUserId);
                 await todoRepository.AddAsync(todo);
+
+                // serialize todo to json
+                var json = JsonSerializer.Serialize(model);
+
+                // notify clients with a same username via websockets
+                await hubContext.Clients.Group(todo.User.UserName)
+                    .SendAsync("TodoCreated", json);
 
                 return RedirectToAction("index", "todos");
             }
