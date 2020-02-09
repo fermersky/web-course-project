@@ -5,11 +5,18 @@
     {
       "library": "jquery@3.4.1",
       "destination": "wwwroot/lib/jquery/"
+    },
+    {
+      "library": "popper.js@1.16.1",
+      "destination": "wwwroot/lib/popper.js/"
+    },
+    {
+      "provider": "unpkg",
+      "library": "@microsoft/signalr@3.1.0",
+      "destination": "wwwroot/lib/@microsoft/signalr/",
+      "files": [
+        "dist/browser/signalr.min.js"
+      ]
     }
-  ,
-{
-  "library": "popper.js@1.16.1",
-  "destination": "wwwroot/lib/popper.js/"
-}
-]
+  ]
 }

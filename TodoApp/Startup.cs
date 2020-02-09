@@ -38,6 +38,12 @@ namespace TodoApp
             services.AddIdentity<ApplicationUser, IdentityRole>().AddEntityFrameworkStores<TodoDbContext>();
             services.AddTransient<TodoRepository>();
             services.AddSignalR();
+
+            services.AddAuthentication().AddGoogle(options => 
+            {
+                options.ClientId = Configuration["GoogleClientId"];
+                options.ClientSecret = Configuration["GoogleClientSecret"];
+            });
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
