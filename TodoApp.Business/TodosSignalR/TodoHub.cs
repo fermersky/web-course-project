@@ -9,12 +9,6 @@ namespace TodoApp.Business.TodosSignalR
 {
     public class TodoHub : Hub
     {
-        public void Notify(Todo todo)
-        {
-            string name = Context.User.Identity.Name;
-            string connectionId = Context.ConnectionId;
-        }
-
         public override async Task OnConnectedAsync()
         {
             string name = Context.User.Identity.Name;

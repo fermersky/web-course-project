@@ -13,6 +13,7 @@ namespace TodoApp.Entities.Models
         public DateTime Deadline { get; set; }
         public Priority Priority { get; set; }
         public virtual ApplicationUser User { get; set; }
+        public bool IsCompleted { get; set; }
     }
 
     public enum Priority { Low = 0, Medium = 1, Hight = 2 }
