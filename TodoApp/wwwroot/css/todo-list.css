@@ -1,0 +1,203 @@
+﻿.todo-item {
+    display: flex;
+    flex-direction: row;
+    padding: 10px 30px 0 30px;
+    position: relative;
+    justify-content: space-between;
+    border-bottom: 1px solid #eee;
+    padding-top: 20px;
+    cursor: pointer;
+    transition: 0.2s;
+}
+
+
+.todo-iscompleted {
+    font-size: 20px;
+}
+
+.todo-summary {
+    font-size: 20px;
+    margin: 0 20px;
+    font-family: 'Montserrat', sans-serif;
+    max-width: 420px;
+    position: relative;
+}
+
+.todo-thoughtline {
+    position: absolute;
+    width: 0;
+    top: 40%;
+    left: -1%;
+    transform: translateY(-80%);
+    height: 3px;
+    background: #313131;
+}
+
+.display-thoughtline {
+    width: 102%;
+}
+
+.todo-priority {
+    padding: 5px;
+    color: #fff;
+    display: block;
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    font-weight: bold;
+    text-align: center;
+    box-shadow: 0 0px 10px #c2c2c2;
+    text-transform: uppercase;
+}
+
+.hight {
+    background-color: #F34336;
+}
+
+.medium {
+    background: #FE9800;
+}
+
+.low {
+    background: #4CAF50;
+}
+
+.todo-category {
+    text-transform: uppercase;
+    background: #9C27B0;
+    border-radius: 5px;
+    padding: 5px 15px;
+    color: #fff;
+    font-weight: bold;
+    font-size: 14px;
+    box-shadow: 0 5px 5px #e6e6e6;
+    margin-left: 20px;
+    margin-right: 20px;
+}
+
+.check-mark {
+    transform: scale(1.1)
+}
+
+.todo-complete-mark {
+    position: relative;
+}
+
+.todo-complete-mark:hover::after, .todo-complete-mark:hover::before {
+    opacity: 1;
+    visibility: visible;
+}
+
+.todo-complete-mark:hover::after {
+    top: -24px;
+}
+
+.todo-complete-mark:hover::before {
+    top: 0px;
+}
+
+.todo-complete-mark::after {
+    position: absolute;
+    content: 'Click here if is the task is done';
+    padding: 3px 6px;
+    border-radius: 4px;
+    color: #fff;
+    background: rgba(0, 0, 0, 0.84);
+    font-size: 13px;
+    width: 190px;
+    text-align: center;
+    display: block;
+    transition: 0.2s;
+    top: -29px;
+    left: 50%;
+    transform: translateX(-50%);
+    opacity: 0;
+    visibility: hidden;
+
+}
+
+.todo-complete-mark::before {
+    top: -4px;
+    position: absolute;
+    content: '';
+    left: 50%;
+    transform: translateX(-50%);
+    transition: 0.2s;
+    width: 0;
+    height: 0;
+    border-style: solid;
+    border-width: 8px 8px 0 8px;
+    border-color: rgba(0, 0, 0, 0.84) transparent transparent transparent;
+    opacity: 0;
+    visibility: hidden;
+}
+
+.todo-complete-mark > i {
+    color: #ccc;
+}
+
+.completed {
+    background: #eee;
+    margin: 10px;
+    box-shadow: 0 3px 5px #d7d7d7;
+    border-radius: 5px;
+}
+
+.completed .todo-summary {
+}
+
+.completed .todo-complete-mark > i {
+    color: #4CAF50;
+}
+
+.delete-todo {
+    position: relative;
+}
+
+.delete-todo:hover::after, .delete-todo:hover::before {
+    opacity: 1;
+    visibility: visible;
+}
+
+.delete-todo:hover::after {
+    top: -32px;
+}
+
+.delete-todo:hover::before {
+    top: -8px;
+}
+
+.delete-todo::after {
+    position: absolute;
+    content: 'Remove todo';
+    padding: 3px 6px;
+    border-radius: 4px;
+    color: #fff;
+    background: #F34336;
+    font-size: 13px;
+    width: 100px;
+    text-align: center;
+    display: block;
+    transition: 0.2s;
+    top: -34px;
+    left: 70%;
+    transform: translateX(-50%);
+    opacity: 0;
+    visibility: hidden;
+}
+
+.delete-todo::before {
+    top: -9px;
+    position: absolute;
+    content: '';
+    left: 70%;
+    transform: translateX(-50%);
+    transition: 0.2s;
+    width: 0;
+    height: 0;
+    border-style: solid;
+    border-width: 8px 8px 0 8px;
+    border-color: #F34336 transparent transparent transparent;
+    opacity: 0;
+    visibility: hidden;
+}

@@ -6,11 +6,32 @@
 
 <h1>Index</h1>
 
+@section Styles{ 
+    <link href="~/css/todo-list.css" rel="stylesheet" />
+}
+
 @if (Model.Any())
 {
     foreach (Todo todo in Model)
     {
-        <h1>@todo.Title</h1>
+        <div class="todo-item" data-todojson="jsonhere">
+            <div class="d-inline-flex">
+                <a class="check-mark">
+                    <i style="margin-top:8px" class="fas fa-check"></i>
+                </a>
+                <div class="todo-summary">
+                    <p>@todo.Title</p>
+                    <div class="todo-thoughtline"></div>
+                </div>
+                <p class="todo-priority hight">H</p>
+            </div>
+            <div class="todo-item-desc fr">
+                <p style="margin-top: 4px">@todo.Deadline.ToShortDateString()</p>
+                <p class="todo-category">#@todo.Hashtag</p>
+                <p><a href="/home/edit/@todo.Id"><i style="margin-top: 5px" class="fas fa-pencil-alt"></i></a></p>
+                <p><a href="#" class="delete-todo"><i style="margin-top: 5px; margin-left: 10px; color: red" class="fas fa-trash-alt"></i></a></p>
+            </div>
+        </div>
     }
 }
 else
@@ -27,11 +48,10 @@ else
             .withUrl("/todohub")
             .build();
 
-        hubConnection.on('TodoCreated', data => {
+        hubConnection.on('TodosUpdated', data => {
             console.log(data)
         })
 
         hubConnection.start();
-
     </script>
 }

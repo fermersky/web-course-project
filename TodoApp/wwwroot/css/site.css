@@ -32,5 +32,11 @@ a {
 }
 
 .nav-item {
-    margin: 0 10px;
+    margin: 4px 10px;
+}
+
+.navbar-toggler {
+    padding: 6px 10px;
+    border-radius: 5px;
+    cursor: pointer;
 }

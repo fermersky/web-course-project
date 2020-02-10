@@ -62,12 +62,13 @@ namespace TodoApp.Controllers
                 todo.User = await userManager.FindByIdAsync(signedInUserId);
                 await todoRepository.AddAsync(todo);
 
-                // serialize todo to json
-                var json = JsonSerializer.Serialize(model);
+
+                // serialize todos to json
+                var json = JsonSerializer.Serialize(await todoRepository.GetListAsync());
 
                 // notify clients with a same username via websockets
                 await hubContext.Clients.Group(todo.User.UserName)
-                    .SendAsync("TodoCreated", json);
+                    .SendAsync("TodosUpdated", json);
 
                 return RedirectToAction("index", "todos");
             }

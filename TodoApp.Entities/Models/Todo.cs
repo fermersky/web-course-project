@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Text.Json.Serialization;
 
 namespace TodoApp.Entities.Models
 {
@@ -12,6 +13,8 @@ namespace TodoApp.Entities.Models
         public string Hashtag { get; set; }
         public DateTime Deadline { get; set; }
         public Priority Priority { get; set; }
+
+        [JsonIgnore]
         public virtual ApplicationUser User { get; set; }
         public bool IsCompleted { get; set; }
     }
