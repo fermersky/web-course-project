@@ -62,18 +62,38 @@ namespace TodoApp.Controllers
                 todo.User = await userManager.FindByIdAsync(signedInUserId);
                 await todoRepository.AddAsync(todo);
 
-
-                // serialize todos to json
-                var json = JsonSerializer.Serialize(await todoRepository.GetListAsync());
-
-                // notify clients with a same username via websockets
-                await hubContext.Clients.Group(todo.User.UserName)
-                    .SendAsync("TodosUpdated", json);
+                await SendUserDateOnTodosUpdateAsync();
 
                 return RedirectToAction("index", "todos");
             }
 
             return View();
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> ChangeTodoStatus(int id)
+        {
+            var todo = await todoRepository.ChangeTodoStatusAsync(id);
+
+            if (todo == null)
+                return NotFound();
+
+            await SendUserDateOnTodosUpdateAsync();
+
+            return Ok($"Status of todo with id = {id} was successfully changed");
+        }
+
+        private async Task SendUserDateOnTodosUpdateAsync()
+        {
+            // serialize todos to json
+            var json = JsonSerializer.Serialize(await todoRepository.GetListAsync());
+
+            var signedInUserId = User.FindFirst(ClaimTypes.NameIdentifier).Value;
+            var user = await userManager.FindByIdAsync(signedInUserId);
+
+            // notify clients with a same username via websockets
+            await hubContext.Clients.Group(user.UserName)
+                .SendAsync("TodosUpdated", json);
         }
     }
 }

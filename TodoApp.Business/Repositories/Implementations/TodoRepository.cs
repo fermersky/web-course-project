@@ -24,5 +24,20 @@ namespace TodoApp.Business.Repositories.Implementations
             var result = storage.Where(todo => todo.User.Id == userId);
             return await result.ToListAsync();
         }
+
+        public async Task<Todo> GetByIdAsync(int id)
+        {
+            return await storage.FindAsync(id);
+        }
+
+        public async Task<Todo> ChangeTodoStatusAsync(int id)
+        {
+            var todo = await storage.FirstOrDefaultAsync(t => t.Id == id);
+            todo.IsCompleted = !todo.IsCompleted;
+
+            await SaveAsync();
+
+            return todo;
+        }
     }
 }

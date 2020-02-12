@@ -21,7 +21,7 @@ namespace TodoApp.Business.Repositories.Abstract
         public async Task<TEntity> AddAsync(TEntity entity)
         {
             await storage.AddAsync(entity);
-            await Save();
+            await SaveAsync();
 
             return entity;
         }
@@ -31,7 +31,7 @@ namespace TodoApp.Business.Repositories.Abstract
             return await storage.ToListAsync();
         }
 
-        public async Task Save() => await context.SaveChangesAsync();
+        public async Task SaveAsync() => await context.SaveChangesAsync();
 
 
     }
