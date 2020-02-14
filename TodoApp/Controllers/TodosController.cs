@@ -29,12 +29,10 @@ namespace TodoApp.Controllers
             this.hubContext = hubContext;
         }
 
-        public async Task<IActionResult> Index()
+        [HttpGet]
+        public IActionResult Index()
         {
-            var signedInUserId = User.FindFirst(ClaimTypes.NameIdentifier).Value;
-            var model = await this.todoRepository.GetListByUserIdAsync(signedInUserId);
-
-            return View(model);
+            return View();
         }
 
         [HttpGet]
@@ -50,10 +48,10 @@ namespace TodoApp.Controllers
             {
                 var todo = new Todo
                 {
-                    Title = model.Title,
-                    Summary = model.Summary,
+                    Title = model.Title.Trim(),
+                    Summary = model.Summary.Trim(),
                     Deadline = model.Deadline,
-                    Hashtag = model.Hashtag,
+                    Hashtag = model.Hashtag.Trim().ToLower(),
                     Priority = model.Priority,
                 };
 
@@ -85,15 +83,22 @@ namespace TodoApp.Controllers
 
         private async Task SendUserDateOnTodosUpdateAsync()
         {
-            // serialize todos to json
-            var json = JsonSerializer.Serialize(await todoRepository.GetListAsync());
-
+            var json = await GetTodosForUserAsJson();
             var signedInUserId = User.FindFirst(ClaimTypes.NameIdentifier).Value;
             var user = await userManager.FindByIdAsync(signedInUserId);
 
             // notify clients with a same username via websockets
             await hubContext.Clients.Group(user.UserName)
                 .SendAsync("TodosUpdated", json);
+        }
+
+        private async Task<string> GetTodosForUserAsJson()
+        {
+            var signedInUserId = User.FindFirst(ClaimTypes.NameIdentifier).Value;
+            var result = await todoRepository.GetListByUserIdAsync(signedInUserId);
+            var todos = result.OrderByDescending(t => t.Priority).ToList();
+
+            return JsonSerializer.Serialize(todos, options: new JsonSerializerOptions {PropertyNamingPolicy = JsonNamingPolicy.CamelCase });
         }
     }
 }
