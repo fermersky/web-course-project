@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Text;
+using Microsoft.AspNetCore.Mvc;
 
 namespace TodoApp.Presentation.ViewModels
 {
@@ -9,6 +10,7 @@ namespace TodoApp.Presentation.ViewModels
     {
         [Required]
         [DataType(DataType.EmailAddress)]
+        [Remote(action: "IsEmailInUse", "Account", ErrorMessage = "Email address is already taken")]
         public string Email { get; set; }
 
         [Required]

@@ -165,5 +165,12 @@ namespace TodoApp.Controllers
             await signInManager.SignOutAsync();
             return RedirectToAction("Index", "Home");
         }
+
+        [AcceptVerbs("Get", "Post")]
+        public async Task<IActionResult> IsEmailInUse(string email)
+        {
+            var user = await userManager.FindByEmailAsync(email);
+            return user == null ? Json(true) : Json($"Email address is already taken");
+        }
     }
 }
