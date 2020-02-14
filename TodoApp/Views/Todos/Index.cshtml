@@ -6,13 +6,25 @@
 
 
 
-@section Styles{ 
+@section Styles{
     <link href="~/css/todo-list.css" rel="stylesheet" />
+
+    <style>
+        body {
+            background-image: url('images/afinskaya-shkola-rafael.jpg');
+            background-size: contain;
+            background-repeat: no-repeat;
+        }
+
+        .navbar {
+            box-shadow: 0 5px 20px #1a1a1a;
+        }
+    </style>
 }
 
 <div>
-    <h1>Let</h1>
-    <a asp-controller="todos" asp-action="create" class="btn btn-outline-primary my-3">add todo</a>
+    <h1>Let's do it, man!</h1>
+    <a asp-controller="todos" asp-action="create" class="btn btn-primary btn-raised btn-lg my-3">add todo</a>
 
     <div class="todo-list-body row">
         <div class="loader">Loading...</div>
@@ -43,22 +55,22 @@
             const completedTodos = todos.filter(todo => todo.isCompleted);
 
             if (noCompletedTodos.length > 0) {
-                todoContainer.append(`<h3 class="todo-list-title col-md-12 my-4">Newest!</h3>`);
+                todoContainer.append(`<h2 class="todo-list-title col-md-12 my-4">Newest!</h2>`);
                 markUp = getHtmlTodosMarkupFromList(noCompletedTodos);
                 todoContainer.append(markUp);
             }
 
             if (completedTodos.length > 0) {
-                todoContainer.append(`<h3 class="todo-list-title col-md-12 my-4">Just done. Good job, man!</h3>`);
+                todoContainer.append(`<h2 class="todo-list-title col-md-12 my-4">Just done. Good job, man!</h2>`);
                 markUp = getHtmlTodosMarkupFromList(completedTodos);
                 todoContainer.append(markUp);
             }
 
             if (noCompletedTodos.length === 0 && completedTodos.length === 0) {
-                todoContainer.append(`<h3 class="todo-list-title">You don't have any task!</h3>`);
+                todoContainer.append(`<h2 class="todo-list-title col-md-12 my-4">You don't have any task!</h2>`);
             }
 
-           $('.todo-complete-mark').on('click', function () {
+            $('.todo-complete-mark').on('click', function () {
                 event.preventDefault();
 
                 $(this)
@@ -99,30 +111,30 @@
                 }
 
                 const todoMarkUp = `
-                      <div class="todo-item col-md-12 ${todo.isCompleted && "completed"}" data-todo-id='${todo.id}'>
-                         <div class="row col-md-12">
-                            <div class="d-inline-flex col-md-6 col-xs-12">
-                                <a class='check-mark ${todo.isCompleted || "todo-complete-mark"}' >
-                                    <i style="margin-top: 8px; cursor: pointer;" class="fas fa-check"></i>
-                                </a>
-                                <div class="todo-summary">
-                                    <p style="position:relative">${todo.title}
-                                        <div class="todo-thoughtline"></div>
-                                    </p>
+                          <div class="todo-item col-md-12 ${todo.isCompleted && "completed"}" data-todo-id='${todo.id}'>
+                             <div class="row col-md-12">
+                                <div class="d-inline-flex col-md-6 col-xs-12">
+                                    <a class='check-mark ${todo.isCompleted || "todo-complete-mark"}' >
+                                        <i style="margin-top: 8px; cursor: pointer;" class="fas fa-check"></i>
+                                    </a>
+                                    <div class="todo-summary">
+                                        <p style="position:relative">${todo.title}
+                                            <div class="todo-thoughtline"></div>
+                                        </p>
 
-                                    <p class="font-italic" style="color: #808080">${todo.summary}</p>
+                                        <p class="font-italic" style="color: #808080">${todo.summary}</p>
+                                    </div>
+                                    <p class="todo-priority ${priority}">${priority[0]}</p>
                                 </div>
-                                <p class="todo-priority ${priority}">${priority[0]}</p>
-                            </div>
-                            <div class="todo-item-desc d-inline-flex col-md-6 col-xs-12 justify-content-md-end justify-content-xs-center align-items-center">
-                                <p style="margin-top: 4px">${getShortDate(todo.deadline)}</p>
-                                <p class="todo-category">#${todo.hashtag}</p>
-                                <p><a href="/home/edit/${todo.id}"><i style="margin-top: 5px" class="fas fa-pencil-alt"></i></a></p>
-                                <p><a href="#" class="delete-todo"><i style="margin-top: 5px; margin-left: 10px; color: red" class="fas fa-trash-alt"></i></a></p>
+                                <div class="todo-item-desc d-inline-flex col-md-6 col-xs-12 justify-content-md-end justify-content-xs-center align-items-center">
+                                    <p style="margin-top: 4px">${getShortDate(todo.deadline)}</p>
+                                    <p class="todo-category">#${todo.hashtag}</p>
+                                    <p><a href="/home/edit/${todo.id}"><i style="margin-top: 5px" class="fas fa-pencil-alt"></i></a></p>
+                                    <p><a href="#" class="delete-todo"><i style="margin-top: 5px; margin-left: 10px; color: red" class="fas fa-trash-alt"></i></a></p>
+                                </div>
                             </div>
                         </div>
-                    </div>
-                    `;
+                        `;
 
                 markUp += todoMarkUp;
             })

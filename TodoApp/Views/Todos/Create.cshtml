@@ -5,6 +5,18 @@
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
+<style>
+    body {
+        background-image: url('../images/god.jpg');
+        background-size: contain;
+        background-repeat: no-repeat;
+    }
+
+    .navbar {
+        box-shadow: 0 5px 20px #565656;
+    }
+</style>
+
 <h1>Create</h1>
 
 <div class="row">
@@ -21,24 +33,29 @@
                 <input asp-for="Summary" class="form-control" />
                 <span asp-validation-for="Summary" class="text-danger"></span>
             </div>
+
             <div class="form-group">
                 <label asp-for="Hashtag" class="control-label"></label>
                 <input asp-for="Hashtag" class="form-control" />
                 <span asp-validation-for="Hashtag" class="text-danger"></span>
             </div>
-            <div class="form-group">
+            <div class="form-group mb-3">
                 <label asp-for="Deadline" class="control-label"></label>
                 <input asp-for="Deadline" class="form-control" />
                 <span asp-validation-for="Deadline" class="text-danger"></span>
             </div>
+
+            <label class="radio-inline my-3">
+                <input type="radio" checked asp-for="Priority" value="0"> Low
+            </label>
+            <label class="radio-inline mx-4">
+                <input type="radio" asp-for="Priority" value="1"> Medium
+            </label>
+            <label class="radio-inline">
+                <input type="radio" asp-for="Priority" value="2"> Hight
+            </label>
             <div class="form-group">
-                <label asp-for="Priority" class="control-label"></label>
-                <select class="custom-select" asp-for="Priority" asp-items="Html.GetEnumSelectList<Priority>()">
-                </select>
-                <span asp-validation-for="Priority" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <input type="submit" value="Add" class="btn btn-primary" />
+                <input type="submit" value="Create todo" class="btn btn-primary btn-raised btn-lg my-4" />
             </div>
         </form>
     </div>

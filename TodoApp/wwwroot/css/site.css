@@ -12,24 +12,14 @@ a {
     text-decoration: none;
 }
 
-
-.header {
-    box-shadow: 0 0 10px #eee;
-    height: 70px;
-    display: flex;
-    align-items: center;
+h1 {
+    font-size: 70px;
+    margin: 80px 0 40px 0;
+    font-weight: 500;
 }
 
-.header-nav {
-    display: flex;
-    align-items: center;
-    padding-top: 20px;
-}
 
-.header-nav-container {
-    display: flex;
-    justify-content: space-between;
-}
+
 
 .nav-item {
     margin: 4px 10px;
