@@ -6,7 +6,6 @@
     justify-content: space-between;
     border-bottom: 1px solid #eee;
     padding-top: 20px;
-    cursor: pointer;
     transition: 0.2s;
 }
 
@@ -26,9 +25,8 @@
 .todo-thoughtline {
     position: absolute;
     width: 0;
-    top: 40%;
+    top: 17%;
     left: -1%;
-    transform: translateY(-80%);
     height: 3px;
     background: #313131;
 }
@@ -76,7 +74,8 @@
 }
 
 .check-mark {
-    transform: scale(1.1)
+    transform: scale(1.1);
+    align-self: flex-start;
 }
 
 .todo-complete-mark {
@@ -138,7 +137,7 @@
 
 .completed {
     background: #eee;
-    margin: 10px;
+    margin: 10px 0;
     box-shadow: 0 3px 5px #d7d7d7;
     border-radius: 5px;
 }
