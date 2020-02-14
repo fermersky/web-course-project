@@ -1,0 +1,71 @@
+﻿@model TodoApp.Presentation.ViewModels.EditTodoViewModel
+
+@{
+    ViewData["Title"] = "Edit";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<style>
+    body {
+        background-image: url('/images/kazaki.jpg');
+        background-size: contain;
+        background-repeat: no-repeat;
+    }
+
+    .navbar {
+        box-shadow: 0 5px 20px #565656;
+    }
+</style>
+
+<h1>Edit</h1>
+
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="Edit">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <input type="hidden" asp-for="Id" />
+            <div class="form-group">
+                <label asp-for="Title" class="control-label"></label>
+                <input asp-for="Title" class="form-control" />
+                <span asp-validation-for="Title" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Summary" class="control-label"></label>
+                <input asp-for="Summary" class="form-control" />
+                <span asp-validation-for="Summary" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Hashtag" class="control-label"></label>
+                <input asp-for="Hashtag" class="form-control" />
+                <span asp-validation-for="Hashtag" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Deadline" class="control-label"></label>
+                <input asp-for="Deadline" class="form-control" />
+                <span asp-validation-for="Deadline" class="text-danger"></span>
+            </div>
+            <label class="radio-inline my-3">
+                <input type="radio" data-priority="Low" name="Priority" value="0"> Low
+            </label>
+            <label class="radio-inline mx-4">
+                <input type="radio" data-priority="Medium" name="Priority" value="1"> Medium
+            </label>
+            <label class="radio-inline">
+                <input type="radio" data-priority="Hight" name="Priority" value="2"> Hight
+            </label>
+            <div class="form-group">
+                <input type="submit" value="Save" class="btn btn-primary btn-raised my-3" />
+                <a asp-action="index" asp-controller="todos" class="btn btn-raised mr-2 mt-1 btn-danger">← Back to List</a>
+            </div>
+        </form>
+    </div>
+</div>
+
+@section Scripts{
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    <script>
+        $(function () {
+            $('input[type="radio"][data-priority="@Model.Priority"]').attr('checked', true)
+        })
+    </script>
+}

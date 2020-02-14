@@ -33,6 +33,12 @@ namespace TodoApp.Business.Repositories.Abstract
 
         public async Task SaveAsync() => await context.SaveChangesAsync();
 
+        public async Task<TEntity> UpdateAsync(TEntity entity)
+        {
+            context.Entry(entity).State = EntityState.Modified;
+            await SaveAsync();
 
+            return entity;
+        }
     }
 }

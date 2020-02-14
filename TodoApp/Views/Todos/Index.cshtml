@@ -119,7 +119,7 @@
                                     </a>
                                     <div class="todo-summary">
                                         <p style="position:relative">${todo.title}
-                                            <div class="todo-thoughtline"></div>
+                                            <div class="todo-thoughtline ${todo.isCompleted && 'display-thoughtline'}"></div>
                                         </p>
 
                                         <p class="font-italic" style="color: #808080">${todo.summary}</p>
@@ -129,7 +129,7 @@
                                 <div class="todo-item-desc d-inline-flex col-md-6 col-xs-12 justify-content-md-end justify-content-xs-center align-items-center">
                                     <p style="margin-top: 4px">${getShortDate(todo.deadline)}</p>
                                     <p class="todo-category">#${todo.hashtag}</p>
-                                    <p><a href="/home/edit/${todo.id}"><i style="margin-top: 5px" class="fas fa-pencil-alt"></i></a></p>
+                                    <p><a href="/todos/edit/${todo.id}"><i style="margin-top: 5px" class="fas fa-pencil-alt"></i></a></p>
                                     <p><a href="#" class="delete-todo"><i style="margin-top: 5px; margin-left: 10px; color: red" class="fas fa-trash-alt"></i></a></p>
                                 </div>
                             </div>

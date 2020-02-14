@@ -68,6 +68,52 @@ namespace TodoApp.Controllers
             return View();
         }
 
+        [HttpGet]
+        public async Task<IActionResult> Edit(int? id)
+        {
+            if (id == null)
+                throw new ArgumentNullException(nameof(id));
+
+            var todo = await todoRepository.GetByIdAsync(id.Value);
+
+            if (todo == null)
+                return NotFound();
+
+            var model = new EditTodoViewModel
+            {
+                Id = todo.Id,
+                Title = todo.Title,
+                Hashtag = todo.Hashtag,
+                Summary = todo.Summary,
+                Deadline = todo.Deadline,
+                Priority = todo.Priority
+            };
+
+            return View(model);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> Edit(EditTodoViewModel model)
+        {
+            if (ModelState.IsValid)
+            {
+                var todo = new Todo
+                {
+                    Id = model.Id,
+                    Title = model.Title.Trim(),
+                    Summary = model.Summary.Trim(),
+                    Hashtag = model.Hashtag.Trim().ToLower(),
+                    Deadline = model.Deadline,
+                    Priority = model.Priority,
+                };
+
+                await todoRepository.UpdateAsync(todo);
+                await SendUserDateOnTodosUpdateAsync();
+                return RedirectToAction("index", "todos");
+            }
+            return View();
+        }
+
         [HttpPost]
         public async Task<IActionResult> ChangeTodoStatus(int id)
         {
