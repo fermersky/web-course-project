@@ -26,26 +26,33 @@ namespace TodoApp.Controllers
         }
 
         [HttpGet]
-        public async Task<ActionResult<List<Todo>>> GetTodos(Filter? filter)
+        public async Task<ActionResult<List<Todo>>> GetTodos(Filter? filter, string title, string hashtag)
         {
             var result = await repository.GetListByUserIdAsync(UserId);
-            result = result.OrderByDescending(t => t.Priority).ToList();
 
-            if (filter == null)
+            if (filter != null)
             {
-                return result;
+                var now = DateTime.Now;
+
+                result = filter switch
+                {
+                    Filter.Day => result.Where(t => t.Deadline.Day == now.Day).ToList(),
+                    Filter.Week => result.Where(t => t.Deadline.Day == now.Day || t.Deadline.Day == now.AddDays(7).Day).ToList(),
+                    Filter.Month => result.Where(t => t.Deadline.Month == now.Month && t.Deadline.Year == now.Year).ToList(),
+                    Filter.Year => result.Where(t => t.Deadline.Year == now.Year).ToList(),
+                    _ => result
+                };
             }
 
-            var now = DateTime.Now;
+            if (title != null)
+                result = result.Where(t => t.Title.Contains(title, StringComparison.OrdinalIgnoreCase)).ToList();
 
-            return filter switch
-            {
-                Filter.Day => result.Where(t => t.Deadline.Day == now.Day).ToList(),
-                Filter.Week => result.Where(t => t.Deadline.Day == now.Day || t.Deadline.Day == now.AddDays(7).Day).ToList(),
-                Filter.Month => result.Where(t => t.Deadline.Month == now.Month && t.Deadline.Year == now.Year).ToList(),
-                Filter.Year => result.Where(t => t.Deadline.Year == now.Year).ToList(),
-                _ => NotFound(),
-            };
+            if (hashtag != null)
+                result = result.Where(t => t.Hashtag.Contains(hashtag, StringComparison.OrdinalIgnoreCase)).ToList();
+
+            result = result.OrderByDescending(t => t.Priority).ToList();
+
+            return result;
         }
     }
 }
