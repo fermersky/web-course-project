@@ -30,7 +30,7 @@ namespace TodoApp.Business.Azure
 
         public async Task DeleteFileAsync(string fileName)
         {
-            await blobContainer.GetBlobClient(fileName).DeleteAsync();
+            await blobContainer.GetBlobClient(fileName).DeleteIfExistsAsync();
         }
     }
 }

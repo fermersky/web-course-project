@@ -35,7 +35,7 @@ namespace TodoApp.Business.Repositories.Abstract
 
         public async Task<TEntity> UpdateAsync(TEntity entity)
         {
-            context.Entry(entity).State = EntityState.Modified;
+            storage.Update(entity);
             await SaveAsync();
 
             return entity;

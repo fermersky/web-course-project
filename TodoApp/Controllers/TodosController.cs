@@ -116,19 +116,17 @@ namespace TodoApp.Controllers
         {
             if (ModelState.IsValid)
             {
-                var todo = new Todo
-                {
-                    Id = model.Id,
-                    Title = model.Title.Trim(),
-                    Summary = model.Summary.Trim(),
-                    Hashtag = model.Hashtag != null ? model.Hashtag.Trim().ToLower() : model.Hashtag,
-                    Deadline = model.Deadline,
-                    Priority = model.Priority,
-                    IsCompleted = model.IsCompleted
-                };
+                var todo = await todoRepository.GetByIdAsync(model.Id);
+
+                todo.Title = model.Title.Trim();
+                todo.Summary = model.Summary.Trim();
+                todo.Hashtag = model.Hashtag != null ? model.Hashtag.Trim().ToLower() : model.Hashtag;
+                todo.Deadline = model.Deadline;
+                todo.Priority = model.Priority;
 
                 await todoRepository.UpdateAsync(todo);
                 await SendUserDateOnTodosUpdateAsync();
+
                 return RedirectToAction("index", "todos");
             }
             return View();
