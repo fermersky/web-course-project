@@ -39,7 +39,6 @@
 }
 
 .todo-priority {
-    padding: 5px;
     color: #fff;
     display: block;
     width: 30px;
@@ -49,6 +48,9 @@
     text-align: center;
     box-shadow: 0 0px 10px #c2c2c2;
     text-transform: uppercase;
+    padding: 3px;
+    font-size: 18px;
+    margin-left: 10px;
 }
 
 .hight {
