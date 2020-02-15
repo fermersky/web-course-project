@@ -17,6 +17,8 @@ namespace TodoApp.Entities.Models
         [JsonIgnore]
         public virtual ApplicationUser User { get; set; }
         public bool IsCompleted { get; set; }
+
+        public string FileUrl { get; set; }
     }
 
     public enum Priority { Low = 0, Medium = 1, Hight = 2 }
