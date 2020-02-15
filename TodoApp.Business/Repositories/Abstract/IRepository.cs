@@ -11,5 +11,6 @@ namespace TodoApp.Business.Repositories.Abstract
 
         Task<List<TEntity>> GetListAsync();
         Task<TEntity> UpdateAsync(TEntity entity);
+        Task<TEntity> DeleteAsync(TEntity entity);
     }
 }

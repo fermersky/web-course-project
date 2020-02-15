@@ -27,5 +27,10 @@ namespace TodoApp.Business.Azure
 
             return blob;
         }
+
+        public async Task DeleteFileAsync(string fileName)
+        {
+            await blobContainer.GetBlobClient(fileName).DeleteAsync();
+        }
     }
 }

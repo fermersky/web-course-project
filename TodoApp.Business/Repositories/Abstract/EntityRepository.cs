@@ -40,5 +40,13 @@ namespace TodoApp.Business.Repositories.Abstract
 
             return entity;
         }
+
+        public async Task<TEntity> DeleteAsync(TEntity entity)
+        {
+            storage.Remove(entity);
+
+            await SaveAsync();
+            return entity;
+        }
     }
 }

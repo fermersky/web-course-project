@@ -133,6 +133,26 @@ namespace TodoApp.Controllers
         }
 
         [HttpPost]
+        public async Task<IActionResult> Delete(int? id)
+        {
+            if (id == null)
+                throw new ArgumentNullException(nameof(id));
+
+            var todo = await todoRepository.GetByIdAsync(id.Value);
+
+            if (todo == null)
+                return NotFound();
+
+            if (todo.FileUrl != null)
+                await blobClient.DeleteFileAsync(todo.FileUrl);
+
+            await todoRepository.DeleteAsync(todo);
+
+            await SendUserDateOnTodosUpdateAsync();
+            return RedirectToAction("index", "todos");
+        }
+
+        [HttpPost]
         public async Task<IActionResult> ChangeTodoStatus(int id)
         {
             var todo = await todoRepository.ChangeTodoStatusAsync(id);

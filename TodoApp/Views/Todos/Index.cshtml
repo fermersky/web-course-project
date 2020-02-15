@@ -89,11 +89,14 @@
             $('.delete-todo').on('click', function () {
                 event.preventDefault();
 
-                const todo = $(this).closest(".todo-item").data("todojson");
-                const service = new TodoAjaxService();
-                $(this).closest(".todo-item").fadeOut(300, () => service.deleteTodo(todo.Id, renderTodosInPage));
+                $(this).closest(".todo-item").fadeOut(300, () => {
+                    const id = $(this).closest('.todo-item').data('todo-id')
+                        $.ajax({
+                            method: 'post',
+                            url: '/todos/delete/' + id,
+                        })
+                });
             })
-
         }
 
         const getHtmlTodosMarkupFromList = todos => {

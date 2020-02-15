@@ -35,7 +35,7 @@ h1 {
 .loader,
 .loader:before,
 .loader:after {
-    background: #4caeef;
+    background: #3c01a0;
     -webkit-animation: load1 1s infinite ease-in-out;
     animation: load1 1s infinite ease-in-out;
     width: 1em;
@@ -43,7 +43,7 @@ h1 {
 }
 
 .loader {
-    color: #4caeef;
+    color: #3c01a0;
     text-indent: -9999em;
     margin: 88px auto;
     position: relative;
@@ -53,7 +53,6 @@ h1 {
     transform: translateZ(0);
     -webkit-animation-delay: -0.16s;
     animation-delay: -0.16s;
-    margin-top: 40px;
 }
 
     .loader:before,
@@ -96,4 +95,3 @@ h1 {
         height: 5em;
     }
 }
-
