@@ -12,6 +12,7 @@ using TodoApp.Presentation.ViewModels;
 using Microsoft.AspNetCore.SignalR;
 using System.Text.Json;
 using TodoApp.Business.TodosSignalR;
+using TodoApp.Business.Azure;
 
 namespace TodoApp.Controllers
 {
@@ -21,12 +22,19 @@ namespace TodoApp.Controllers
         private readonly TodoRepository todoRepository;
         private readonly UserManager<ApplicationUser> userManager;
         private readonly IHubContext<TodoHub> hubContext;
+        private readonly AzureBlobTodosClient blobClient;
 
-        public TodosController(TodoRepository todoRepository, UserManager<ApplicationUser> userManager, IHubContext<TodoHub> hubContext)
+        public TodosController(
+            TodoRepository todoRepository,
+            UserManager<ApplicationUser> userManager,
+            AzureBlobTodosClient blobClient,
+            IHubContext<TodoHub> hubContext
+        )
         {
             this.todoRepository = todoRepository;
             this.userManager = userManager;
             this.hubContext = hubContext;
+            this.blobClient = blobClient;
         }
 
         [HttpGet]
@@ -54,6 +62,16 @@ namespace TodoApp.Controllers
                     Hashtag = model.Hashtag.Trim().ToLower(),
                     Priority = model.Priority,
                 };
+
+                if (model.AttachedFile != null)
+                {
+                    var stream = model.AttachedFile.OpenReadStream();
+                    string fileName = $"{Guid.NewGuid()}{model.AttachedFile.FileName}";
+
+                    var blobInfo = await blobClient.UploadFileAsync(fileName, stream);
+
+                    todo.FileUrl = blobInfo.Uri.AbsoluteUri;
+                }
 
                 // add todo and bing it to signed in user
                 var signedInUserId = User.FindFirst(ClaimTypes.NameIdentifier).Value;

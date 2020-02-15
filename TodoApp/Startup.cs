@@ -10,6 +10,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using TodoApp.Business.Azure;
 using TodoApp.Business.Repositories.Implementations;
 using TodoApp.Business.TodosSignalR;
 using TodoApp.Entities;
@@ -45,6 +46,9 @@ namespace TodoApp
                 options.ClientId = Configuration["GoogleClientId"];
                 options.ClientSecret = Configuration["GoogleClientSecret"];
             });
+
+            services.AddTransient(_ =>
+                new AzureBlobTodosClient(Configuration.GetConnectionString("AzureBlobConnection"), "todos"));
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

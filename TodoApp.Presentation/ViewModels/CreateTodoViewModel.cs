@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.AspNetCore.Http;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Text;
@@ -21,5 +22,7 @@ namespace TodoApp.Presentation.ViewModels
 
         [Required]
         public Priority Priority { get; set; }
+
+        public IFormFile AttachedFile { get; set; }
     }
 }
