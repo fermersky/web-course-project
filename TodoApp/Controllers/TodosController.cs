@@ -59,7 +59,7 @@ namespace TodoApp.Controllers
                     Title = model.Title.Trim(),
                     Summary = model.Summary.Trim(),
                     Deadline = model.Deadline,
-                    Hashtag = model.Hashtag.Trim().ToLower(),
+                    Hashtag = model.Hashtag != null ? model.Hashtag.Trim().ToLower() : model.Hashtag,
                     Priority = model.Priority,
                 };
 
@@ -121,7 +121,7 @@ namespace TodoApp.Controllers
                     Id = model.Id,
                     Title = model.Title.Trim(),
                     Summary = model.Summary.Trim(),
-                    Hashtag = model.Hashtag.Trim().ToLower(),
+                    Hashtag = model.Hashtag != null ? model.Hashtag.Trim().ToLower() : model.Hashtag,
                     Deadline = model.Deadline,
                     Priority = model.Priority,
                     IsCompleted = model.IsCompleted

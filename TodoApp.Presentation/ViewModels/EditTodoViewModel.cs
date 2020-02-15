@@ -17,7 +17,7 @@ namespace TodoApp.Presentation.ViewModels
         [Required]
         public string Summary { get; set; }
 
-        public string Hashtag { get; set; }
+        public string? Hashtag { get; set; }
 
         [DataType(DataType.Date)]
         public DateTime Deadline { get; set; }
