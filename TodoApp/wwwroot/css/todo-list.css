@@ -20,12 +20,15 @@
     font-family: 'Montserrat', sans-serif;
     max-width: 420px;
     position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
 }
 
 .todo-thoughtline {
     position: absolute;
     width: 0;
-    top: 17%;
+    top: 15px;
     left: -1%;
     height: 3px;
     background: #313131;
