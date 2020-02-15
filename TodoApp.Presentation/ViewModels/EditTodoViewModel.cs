@@ -24,5 +24,7 @@ namespace TodoApp.Presentation.ViewModels
 
         [Required]
         public Priority Priority { get; set; }
+
+        public bool IsCompleted { get; set; }
     }
 }

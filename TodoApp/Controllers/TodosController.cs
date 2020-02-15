@@ -104,7 +104,8 @@ namespace TodoApp.Controllers
                 Hashtag = todo.Hashtag,
                 Summary = todo.Summary,
                 Deadline = todo.Deadline,
-                Priority = todo.Priority
+                Priority = todo.Priority,
+                IsCompleted = todo.IsCompleted
             };
 
             return View(model);
@@ -123,6 +124,7 @@ namespace TodoApp.Controllers
                     Hashtag = model.Hashtag.Trim().ToLower(),
                     Deadline = model.Deadline,
                     Priority = model.Priority,
+                    IsCompleted = model.IsCompleted
                 };
 
                 await todoRepository.UpdateAsync(todo);
