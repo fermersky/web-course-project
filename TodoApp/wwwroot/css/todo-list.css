@@ -146,6 +146,8 @@
     margin: 10px 0;
     box-shadow: 0 3px 5px #d7d7d7;
     border-radius: 5px;
+    background-image: url('../images/stripes-light.png');
+    background-blend-mode: multiply;
 }
 
 .completed .todo-summary {
