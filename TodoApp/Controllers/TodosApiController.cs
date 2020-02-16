@@ -48,7 +48,7 @@ namespace TodoApp.Controllers
                 result = result.Where(t => t.Title.Contains(title, StringComparison.OrdinalIgnoreCase)).ToList();
 
             if (hashtag != null)
-                result = result.Where(t => t.Hashtag.Contains(hashtag, StringComparison.OrdinalIgnoreCase)).ToList();
+                result = result.Where(t => t.Hashtag?.Contains(hashtag, StringComparison.OrdinalIgnoreCase) == true).ToList();
 
             result = result.OrderByDescending(t => t.Priority).ToList();
 
