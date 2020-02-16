@@ -59,7 +59,7 @@ namespace TodoApp.Controllers
                     Title = model.Title.Trim(),
                     Summary = model.Summary.Trim(),
                     Deadline = model.Deadline,
-                    Hashtag = model.Hashtag != null ? model.Hashtag.Trim().ToLower() : model.Hashtag,
+                    Hashtag = ValidateHashtag(model.Hashtag),
                     Priority = model.Priority,
                 };
 
@@ -120,7 +120,7 @@ namespace TodoApp.Controllers
 
                 todo.Title = model.Title.Trim();
                 todo.Summary = model.Summary.Trim();
-                todo.Hashtag = model.Hashtag != null ? model.Hashtag.Trim().ToLower() : model.Hashtag;
+                todo.Hashtag = ValidateHashtag(model.Hashtag);
                 todo.Deadline = model.Deadline;
                 todo.Priority = model.Priority;
 
@@ -183,6 +183,14 @@ namespace TodoApp.Controllers
             var todos = result.OrderByDescending(t => t.Priority).ToList();
 
             return JsonSerializer.Serialize(todos, options: new JsonSerializerOptions {PropertyNamingPolicy = JsonNamingPolicy.CamelCase });
+        }
+
+        private string ValidateHashtag(string hashtag)
+        {
+            if (hashtag == null)
+                return hashtag;
+
+            return hashtag.Replace('#', ' ').Replace(" ", string.Empty).ToLower();
         }
     }
 }
