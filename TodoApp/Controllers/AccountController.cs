@@ -147,7 +147,7 @@ namespace TodoApp.Controllers
                 if (result.Succeeded)
                 {
                     await signInManager.SignInAsync(user, isPersistent: false);
-                    return RedirectToAction("Index", "Home"); //TODO: Change redirection destination
+                    return RedirectToAction("Index", "Todo");
                 }
                 else
                 {

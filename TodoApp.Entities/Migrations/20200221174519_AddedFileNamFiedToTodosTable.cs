@@ -2,7 +2,7 @@
 
 namespace TodoApp.Entities.Migrations
 {
-    public partial class AddedFileNameFieldToTodosTable : Migration
+    public partial class AddedFileNamFiedToTodosTable : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {

@@ -225,6 +225,9 @@ namespace TodoApp.Entities.Migrations
                     b.Property<DateTime>("Deadline")
                         .HasColumnType("datetime2");
 
+                    b.Property<string>("FileName")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<string>("FileUrl")
                         .HasColumnType("nvarchar(max)");
 

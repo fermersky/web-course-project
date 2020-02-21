@@ -10,8 +10,8 @@ using TodoApp.Entities;
 namespace TodoApp.Entities.Migrations
 {
     [DbContext(typeof(TodoDbContext))]
-    [Migration("20200215115204_AddedFileNameFieldToTodosTable")]
-    partial class AddedFileNameFieldToTodosTable
+    [Migration("20200221174519_AddedFileNamFiedToTodosTable")]
+    partial class AddedFileNamFiedToTodosTable
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -228,6 +228,9 @@ namespace TodoApp.Entities.Migrations
                         .HasColumnType("datetime2");
 
                     b.Property<string>("FileName")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("FileUrl")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Hashtag")

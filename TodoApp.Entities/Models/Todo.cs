@@ -19,6 +19,7 @@ namespace TodoApp.Entities.Models
         public bool IsCompleted { get; set; }
 
         public string FileUrl { get; set; }
+        public string FileName { get; set; }
     }
 
     public enum Priority { Low = 0, Medium = 1, Hight = 2 }

@@ -71,6 +71,7 @@ namespace TodoApp.Controllers
                     var blobInfo = await blobClient.UploadFileAsync(fileName, stream);
 
                     todo.FileUrl = blobInfo.Uri.AbsoluteUri;
+                    todo.FileName = fileName;
                 }
 
                 // add todo and bing it to signed in user
@@ -144,7 +145,7 @@ namespace TodoApp.Controllers
                 return NotFound();
 
             if (todo.FileUrl != null)
-                await blobClient.DeleteFileAsync(todo.FileUrl);
+                await blobClient.DeleteFileAsync(todo.FileName);
 
             await todoRepository.DeleteAsync(todo);
 
