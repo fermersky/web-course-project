@@ -34,7 +34,7 @@ namespace TodoApp
 
             services.AddDbContext<TodoDbContext>(provider =>
             {
-                provider.UseSqlServer(Configuration.GetConnectionString("LocalDbConnection"));
+                provider.UseSqlServer(Configuration.GetConnectionString("AzureSqlConnection"));
             });
 
             services.AddIdentity<ApplicationUser, IdentityRole>().AddEntityFrameworkStores<TodoDbContext>();
