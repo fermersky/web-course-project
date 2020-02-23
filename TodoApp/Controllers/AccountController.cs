@@ -5,6 +5,7 @@ using System.Security.Claims;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
 using TodoApp.Entities.Models;
 using TodoApp.Presentation.ViewModels;
 
@@ -14,11 +15,16 @@ namespace TodoApp.Controllers
     {
         private readonly UserManager<ApplicationUser> userManager;
         private readonly SignInManager<ApplicationUser> signInManager;
+        private readonly ILogger<AccountController> logger;
 
-        public AccountController(UserManager<ApplicationUser> userManager, SignInManager<ApplicationUser> signInManager)
+        public AccountController(
+            UserManager<ApplicationUser> userManager, 
+            SignInManager<ApplicationUser> signInManager, 
+            ILogger<AccountController> logger)
         {
             this.userManager = userManager;
             this.signInManager = signInManager;
+            this.logger = logger;
         }
 
         [HttpGet]
@@ -26,8 +32,8 @@ namespace TodoApp.Controllers
         {
             var model = new LoginViewModel
             {
-                ReturnUrl = returnUrl,
-                ExternalLogins = (await signInManager.GetExternalAuthenticationSchemesAsync()).ToList()
+                ReturnUrl = returnUrl ?? string.Empty,
+                ExternalLogins = (await signInManager.GetExternalAuthenticationSchemesAsync()).ToList(),
             };
 
             return View(model);
@@ -36,13 +42,24 @@ namespace TodoApp.Controllers
         [HttpPost]
         public async Task<IActionResult> Login(LoginViewModel model)
         {
+            model.ExternalLogins = (await signInManager.GetExternalAuthenticationSchemesAsync()).ToList();
+
             if (ModelState.IsValid)
             {
+                var user = await userManager.FindByEmailAsync(model.Email);
+
+                if (user?.EmailConfirmed == false
+                    && (await userManager.CheckPasswordAsync(user, model.Password)))
+                {
+                    ModelState.AddModelError(string.Empty, "Email not confirmed yet!");
+                    return View(model);
+                }
+
                 var result = await signInManager.PasswordSignInAsync(model.Email, model.Password, model.RememberMe, lockoutOnFailure: false);
 
                 if (result.Succeeded)
                 {
-                    if (model.ReturnUrl != null)
+                    if (!string.IsNullOrEmpty(model.ReturnUrl))
                         return LocalRedirect(model.ReturnUrl);
                     return RedirectToAction("index", "todos");
                 }
@@ -86,6 +103,20 @@ namespace TodoApp.Controllers
                 return View("Login", model);
             }
 
+            var email = info.Principal.FindFirstValue(ClaimTypes.Email);
+            ApplicationUser user = null;
+
+            if (email != null)
+            {
+                user = await userManager.FindByEmailAsync(email);
+
+                if (user?.EmailConfirmed == false)
+                {
+                    ModelState.AddModelError(string.Empty, "Email not confirmed yet!");
+                    return View("Login", model);
+                }
+            }
+
             // this method checks existing record with received LoginProvider and ProviderKey in AspNetUserLogins
             var signInResult = await signInManager
                 .ExternalLoginSignInAsync(info.LoginProvider, info.ProviderKey, isPersistent: false, bypassTwoFactor: true);
@@ -95,13 +126,9 @@ namespace TodoApp.Controllers
                 return LocalRedirect(returnUrl);
             else
             {
-                var email = info.Principal.FindFirstValue(ClaimTypes.Email);
-
                 // check if external user has a local account
                 if (email != null)
                 {
-                    var user = await userManager.FindByEmailAsync(email);
-
                     if (user == null)
                     {
                         user = new ApplicationUser
@@ -119,7 +146,7 @@ namespace TodoApp.Controllers
                     return LocalRedirect(returnUrl);
                 }
                 else
-                    ModelState.AddModelError(string.Empty, $"Email claim not receive2 from {info.LoginProvider}");
+                    ModelState.AddModelError(string.Empty, $"Email claim not received from {info.LoginProvider}");
             }
 
             return View("Login", model);
@@ -146,8 +173,15 @@ namespace TodoApp.Controllers
 
                 if (result.Succeeded)
                 {
-                    await signInManager.SignInAsync(user, isPersistent: false);
-                    return RedirectToAction("Index", "Todo");
+                    var token = await userManager.GenerateEmailConfirmationTokenAsync(user);
+                    var confirmationLink = Url.Action("ConfirmEmail", "Account", new { userId = user.Id, token = token }, Request.Scheme);
+
+                    logger.Log(LogLevel.Warning, confirmationLink);
+
+                    ViewBag.ErrorTitle = "Registration is successfull";
+                    ViewBag.ErrorMessage = "Before you can Login, please confirm your email, " +
+                        "by clicking on the confirmation link we have emailed you";
+                    return View("Error");
                 }
                 else
                 {

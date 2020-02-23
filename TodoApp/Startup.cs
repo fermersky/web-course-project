@@ -37,7 +37,11 @@ namespace TodoApp
                 provider.UseSqlServer(Configuration.GetConnectionString("AzureSqlConnection"));
             });
 
-            services.AddIdentity<ApplicationUser, IdentityRole>().AddEntityFrameworkStores<TodoDbContext>();
+            services
+                .AddIdentity<ApplicationUser, IdentityRole>(options => options.SignIn.RequireConfirmedEmail = true)
+                .AddEntityFrameworkStores<TodoDbContext>()
+                .AddDefaultTokenProviders();
+
             services.AddTransient<TodoRepository>();
             services.AddSignalR();
 
