@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using TodoApp.Entities.Models;
+using TodoApp.Models;
 using TodoApp.Presentation.ViewModels;
 
 namespace TodoApp.Controllers
@@ -138,6 +139,14 @@ namespace TodoApp.Controllers
                         };
 
                         await userManager.CreateAsync(user);
+
+                        var token = await userManager.GenerateEmailConfirmationTokenAsync(user);
+                        var confirmationLink = Url.Action("ConfirmEmail", "Account", new { userId = user.Id, token }, Request.Scheme);
+
+                        ViewBag.ErrorTitle = confirmationLink;
+                        ViewBag.ErrorMessage = "Before you can Login, please confirm your email, " +
+                            "by clicking on the confirmation link we have emailed you";
+                        return View("Error", new ErrorViewModel { RequestId = Request.HttpContext.TraceIdentifier });
                     }
 
                     await userManager.AddLoginAsync(user, info); // add login to AspNetUserLogins with received credentials
@@ -181,7 +190,7 @@ namespace TodoApp.Controllers
                     ViewBag.ErrorTitle = "Registration is successfull";
                     ViewBag.ErrorMessage = "Before you can Login, please confirm your email, " +
                         "by clicking on the confirmation link we have emailed you";
-                    return View("Error");
+                    return View("Error", new ErrorViewModel {RequestId = Request.HttpContext.TraceIdentifier });
                 }
                 else
                 {
@@ -191,6 +200,32 @@ namespace TodoApp.Controllers
             }
 
             return View();
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> ConfirmEmail(string userId, string token)
+        {
+            if (userId == null || token == null)
+            {
+                return RedirectToAction("index", "home");
+            }
+
+            var user = await userManager.FindByIdAsync(userId);
+
+            if (user == null)
+            {
+                return NotFound();
+            }
+
+            var result = await userManager.ConfirmEmailAsync(user, token);
+
+            if (result.Succeeded)
+            {
+                return View();
+            }
+
+            ViewBag.ErrorTitle = "Email cannot be confirmed";
+            return View("Error", new ErrorViewModel { RequestId = Request.HttpContext.TraceIdentifier });
         }
 
         [HttpPost]
