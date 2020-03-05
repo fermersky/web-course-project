@@ -6,6 +6,8 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
+using TodoApp.Business.Smtp.Abstract;
+using TodoApp.Business.Smtp.Models;
 using TodoApp.Entities.Models;
 using TodoApp.Models;
 using TodoApp.Presentation.ViewModels;
@@ -14,18 +16,21 @@ namespace TodoApp.Controllers
 {
     public class AccountController : Controller
     {
+        private readonly IEmailSender emailSender;
+        private readonly ILogger<AccountController> logger;
         private readonly UserManager<ApplicationUser> userManager;
         private readonly SignInManager<ApplicationUser> signInManager;
-        private readonly ILogger<AccountController> logger;
 
         public AccountController(
-            UserManager<ApplicationUser> userManager, 
-            SignInManager<ApplicationUser> signInManager, 
-            ILogger<AccountController> logger)
+            IEmailSender emailSender,
+            ILogger<AccountController> logger,
+            UserManager<ApplicationUser> userManager,
+            SignInManager<ApplicationUser> signInManager)
         {
+            this.logger = logger;
+            this.emailSender = emailSender;
             this.userManager = userManager;
             this.signInManager = signInManager;
-            this.logger = logger;
         }
 
         [HttpGet]
@@ -143,7 +148,9 @@ namespace TodoApp.Controllers
                         var token = await userManager.GenerateEmailConfirmationTokenAsync(user);
                         var confirmationLink = Url.Action("ConfirmEmail", "Account", new { userId = user.Id, token }, Request.Scheme);
 
-                        ViewBag.ErrorTitle = confirmationLink;
+                        await SendConfirmationLink(user);
+
+                        ViewBag.ErrorTitle = "Registration successfull!";
                         ViewBag.ErrorMessage = "Before you can Login, please confirm your email, " +
                             "by clicking on the confirmation link we have emailed you";
                         return View("Error", new ErrorViewModel { RequestId = Request.HttpContext.TraceIdentifier });
@@ -182,10 +189,7 @@ namespace TodoApp.Controllers
 
                 if (result.Succeeded)
                 {
-                    var token = await userManager.GenerateEmailConfirmationTokenAsync(user);
-                    var confirmationLink = Url.Action("ConfirmEmail", "Account", new { userId = user.Id, token = token }, Request.Scheme);
-
-                    logger.Log(LogLevel.Warning, confirmationLink);
+                    await SendConfirmationLink(user);
 
                     ViewBag.ErrorTitle = "Registration is successfull";
                     ViewBag.ErrorMessage = "Before you can Login, please confirm your email, " +
@@ -240,6 +244,16 @@ namespace TodoApp.Controllers
         {
             var user = await userManager.FindByEmailAsync(email);
             return user == null ? Json(true) : Json($"Email address is already taken");
+        }
+
+        private async Task SendConfirmationLink(ApplicationUser user)
+        {
+            var token = await userManager.GenerateEmailConfirmationTokenAsync(user);
+            var confirmationLink = Url.Action("ConfirmEmail", "Account", new { userId = user.Id, token = token }, Request.Scheme);
+
+            await emailSender.SendEmailAsync(
+                new Message(to: new string[] { user.Email }, subject: "Email Confirmation",
+                    content: $"<h1>Hi, {user.UserName}, please confirm your email by clicking on the link below: <a href='{confirmationLink}'>Confirm email</a></h1>"));
         }
     }
 }

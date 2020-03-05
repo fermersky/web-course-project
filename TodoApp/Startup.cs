@@ -12,6 +12,9 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using TodoApp.Business.Azure;
 using TodoApp.Business.Repositories.Implementations;
+using TodoApp.Business.Smtp.Abstract;
+using TodoApp.Business.Smtp.Implementations;
+using TodoApp.Business.Smtp.Models;
 using TodoApp.Business.TodosSignalR;
 using TodoApp.Entities;
 using TodoApp.Entities.Models;
@@ -34,7 +37,7 @@ namespace TodoApp
 
             services.AddDbContext<TodoDbContext>(provider =>
             {
-                provider.UseSqlServer(Configuration.GetConnectionString("AzureSqlConnection"));
+                provider.UseSqlServer(Configuration.GetConnectionString("LocalDbConnection"));
             });
 
             services
@@ -53,6 +56,11 @@ namespace TodoApp
 
             services.AddTransient(_ =>
                 new AzureBlobTodosClient(Configuration.GetConnectionString("AzureBlobConnection"), "todos"));
+
+            var emailConfig = Configuration.GetSection("EmailConfiguration").Get<EmailConfiguration>();
+            services.AddSingleton(emailConfig);
+
+            services.AddTransient<IEmailSender, EmailSender>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
