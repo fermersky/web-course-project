@@ -5,7 +5,7 @@ using System.Text.Json.Serialization;
 
 namespace TodoApp.Entities.Models
 {
-    public class Todo
+    public class Todo : IEntity
     {
         public int Id { get; set; }
         public string Title { get; set; }
