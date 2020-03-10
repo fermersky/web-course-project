@@ -11,6 +11,8 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using TodoApp.Business.Azure;
+using TodoApp.Business.Repositories;
+using TodoApp.Business.Repositories.Abstract;
 using TodoApp.Business.Repositories.Implementations;
 using TodoApp.Business.Smtp.Abstract;
 using TodoApp.Business.Smtp.Implementations;
@@ -18,6 +20,7 @@ using TodoApp.Business.Smtp.Models;
 using TodoApp.Business.TodosSignalR;
 using TodoApp.Entities;
 using TodoApp.Entities.Models;
+using TodoApp.Presentation.Services;
 
 namespace TodoApp
 {
@@ -45,7 +48,9 @@ namespace TodoApp
                 .AddEntityFrameworkStores<TodoDbContext>()
                 .AddDefaultTokenProviders();
 
+            services.AddTransient<TodoViewModelService>();
             services.AddTransient<TodoRepository>();
+
             services.AddSignalR();
 
             services.AddAuthentication().AddGoogle(options => 

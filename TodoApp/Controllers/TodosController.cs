@@ -13,28 +13,32 @@ using Microsoft.AspNetCore.SignalR;
 using System.Text.Json;
 using TodoApp.Business.TodosSignalR;
 using TodoApp.Business.Azure;
+using TodoApp.Presentation.Services;
 
 namespace TodoApp.Controllers
 {
     [Authorize]
     public class TodosController : Controller
     {
-        private readonly TodoRepository todoRepository;
+        private readonly TodoViewModelService viewModelService;
         private readonly UserManager<ApplicationUser> userManager;
         private readonly IHubContext<TodoHub> hubContext;
         private readonly AzureBlobTodosClient blobClient;
+        private readonly TodoRepository todoRepository;
 
         public TodosController(
-            TodoRepository todoRepository,
+            TodoViewModelService viewModelService,
             UserManager<ApplicationUser> userManager,
             AzureBlobTodosClient blobClient,
+            TodoRepository todoRepository,
             IHubContext<TodoHub> hubContext
         )
         {
-            this.todoRepository = todoRepository;
+            this.viewModelService = viewModelService;
             this.userManager = userManager;
             this.hubContext = hubContext;
             this.blobClient = blobClient;
+            this.todoRepository = todoRepository;
         }
 
         [HttpGet]
@@ -54,31 +58,13 @@ namespace TodoApp.Controllers
         {
             if (ModelState.IsValid)
             {
-                var todo = new Todo
-                {
-                    Title = model.Title.Trim(),
-                    Summary = model.Summary.Trim(),
-                    Deadline = model.Deadline,
-                    Hashtag = ValidateHashtag(model.Hashtag),
-                    Priority = model.Priority,
-                };
-
-                if (model.AttachedFile != null)
-                {
-                    var stream = model.AttachedFile.OpenReadStream();
-                    string fileName = $"{Guid.NewGuid()}{model.AttachedFile.FileName}";
-
-                    var blobInfo = await blobClient.UploadFileAsync(fileName, stream);
-
-                    todo.FileUrl = blobInfo.Uri.AbsoluteUri;
-                    todo.FileName = fileName;
-                }
-
                 // add todo and bing it to signed in user
                 var signedInUserId = User.FindFirst(ClaimTypes.NameIdentifier).Value;
-                todo.User = await userManager.FindByIdAsync(signedInUserId);
-                await todoRepository.AddAsync(todo);
+                var user = await userManager.FindByIdAsync(signedInUserId);
 
+                var todo = await viewModelService.CreateTodoFromModelAsync(model, user);
+
+                await todoRepository.AddAsync(todo);
                 await SendUserDateOnTodosUpdateAsync();
 
                 return RedirectToAction("index", "todos");
@@ -98,16 +84,7 @@ namespace TodoApp.Controllers
             if (todo == null)
                 return NotFound();
 
-            var model = new EditTodoViewModel
-            {
-                Id = todo.Id,
-                Title = todo.Title,
-                Hashtag = todo.Hashtag,
-                Summary = todo.Summary,
-                Deadline = todo.Deadline,
-                Priority = todo.Priority,
-                IsCompleted = todo.IsCompleted
-            };
+            var model = viewModelService.GetEditViewModel(todo);
 
             return View(model);
         }
@@ -117,13 +94,8 @@ namespace TodoApp.Controllers
         {
             if (ModelState.IsValid)
             {
-                var todo = await todoRepository.GetByIdAsync(model.Id);
-
-                todo.Title = model.Title.Trim();
-                todo.Summary = model.Summary.Trim();
-                todo.Hashtag = ValidateHashtag(model.Hashtag);
-                todo.Deadline = model.Deadline;
-                todo.Priority = model.Priority;
+                var toUpdate = await todoRepository.GetByIdAsync(model.Id);
+                var todo = viewModelService.UpdateTodoFromModel(model, toUpdate);
 
                 await todoRepository.UpdateAsync(todo);
                 await SendUserDateOnTodosUpdateAsync();
@@ -184,14 +156,6 @@ namespace TodoApp.Controllers
             var todos = result.OrderByDescending(t => t.Priority).ToList();
 
             return JsonSerializer.Serialize(todos, options: new JsonSerializerOptions {PropertyNamingPolicy = JsonNamingPolicy.CamelCase });
-        }
-
-        private string ValidateHashtag(string hashtag)
-        {
-            if (hashtag == null)
-                return hashtag;
-
-            return hashtag.Replace('#', ' ').Replace(" ", string.Empty).ToLower();
         }
     }
 }
