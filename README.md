@@ -1,1 +1,1 @@
-TodoApp
+This is realtime todo application. User can do CRUD operations with his todos. There are identity and google registration inside app. Application has neat and clear interface based on material bootstrap lib. Architecture of app is multilayer (DAL, Presentation layer and Business layer). Onion architecture allows the application to be orthogonal.
