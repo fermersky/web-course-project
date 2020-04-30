@@ -73,7 +73,7 @@ namespace TodoApp.Controllers
                 ModelState.AddModelError(key: string.Empty, "Pair username and password is wrong!");
             }
 
-            return View();
+            return View(model);
         }
 
         [HttpPost]
@@ -193,7 +193,7 @@ namespace TodoApp.Controllers
 
                     ViewBag.ErrorTitle = "Registration is successfull";
                     ViewBag.ErrorMessage = "Before you can Login, please confirm your email, " +
-                        "by clicking on the confirmation link we have emailed you";
+                        "by clicking on the confirmation link we have emailed you " + user.Email;
                     return View("Error", new ErrorViewModel {RequestId = Request.HttpContext.TraceIdentifier });
                 }
                 else
